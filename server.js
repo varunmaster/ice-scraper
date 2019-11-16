@@ -17,7 +17,7 @@ app.use(express.static("public")); //this allows us to serve up the index.html p
 
 mongoose.connect("mongodb://localhost/ice-scraper", { useNewUrlParser: true });
 
-app.post("/scrape", (req, res) => {
+app.get("/scrape", (req, res) => {
     axios.get("https://old.reddit.com/r/frugalmalefashion/").then((page) => {
         var $ = cheerio.load(page.data); //all the html (tags included) get saved in here
         //console.log($);
@@ -39,6 +39,15 @@ app.post("/scrape", (req, res) => {
             });
         });
         res.redirect("/");
+    });
+});
+
+app.get("/api/all/articles", (req, res) => {
+    db.Article.find({})
+    .then(data => {
+        return res.json(data);
+    }).catch(err => {
+        return res.json(err);
     });
 });
 
