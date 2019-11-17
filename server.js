@@ -39,7 +39,7 @@ app.get("/scrape", (req, res) => {
             //console.log(element); //this is interesting, should take a look at this later
             var result = {};
 
-            result.title = $(this).text();
+            result.title = $(this).children("a.title").text();
 
             result.link = $(this).children("a").attr("href");
 
@@ -57,7 +57,7 @@ app.get("/scrape", (req, res) => {
 });
 
 app.get("/api/all/articles/", (req, res) => {
-    db.Article.find({})
+    db.Article.find({}).sort({"_id": -1})
         .then(data => {
             return res.json(data);
         }).catch(err => {
@@ -68,6 +68,18 @@ app.get("/api/all/articles/", (req, res) => {
 app.delete("/api/all/articles", (req, res) => {
     db.Article.deleteMany({}).then(data => {
         return res.json(data);
+    }).catch(err => {
+        return res.status(500).json(err);
+    });
+});
+
+app.delete("/api/article/:id", (req, res) => {
+    var id = req.params.id;
+    console.log(id);
+    db.Article.deleteOne({
+        "_id": id
+    }).then(data => {
+        return res.json(data)
     }).catch(err => {
         return res.status(500).json(err);
     });
