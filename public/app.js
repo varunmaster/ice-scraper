@@ -12,7 +12,7 @@ $(document).on("click", "#clear-button", () => {
         method: "DELETE",
         url: "/api/all/articles"
     }).then(data => {
-        location.reload();
+        location.reload(true);
     });
 });
 
@@ -38,7 +38,16 @@ $(document).on("click", ".article", function () {
         // put data.title in the card-body
         // console.log(data);
         $(".note").append("<p class='card-text'>" + data.title + "</p>");
-        $(".note").append("<form><div class='form-group'><label for='exampleInputText'>Title</label><input type='text' class='form-control' id='noteTitle' placeholder='Note Title'></div><div class='form-group'><label for='exampleFormControlTextarea1'>Body</label><textarea class='form-control' id='noteBody' rows='3' placeholder='Body'></textarea></div><button type='submit' class='btn btn-primary text-cener' id='note-submitBtn' data-id='" + data._id + "'>Submit</button></form>");
+        $(".note").append("<form><div class='form-group'><label for='exampleInputText'>Title</label><input type='text' class='form-control' id='noteTitle' placeholder='Note Title'></div><div class='form-group'><label for='exampleFormControlTextarea1'>Body</label><textarea class='form-control' id='noteBody' rows='3' placeholder='Body'></textarea></div><button type='submit' class='btn btn-primary text-center' id='note-submitBtn' data-id='" + data._id + "'>Submit</button></form>");
+    }).then( () => {
+        $.ajax({
+            method: "GET",
+            url: "/api/articleNote/" + id
+        }).then(data => {
+            // console.log(data);
+            $("#noteTitle").val(data.note.title);
+            $("#noteBody").val(data.note.body);
+        });
     });
 });
 
@@ -47,10 +56,15 @@ $(document).on("click", "#note-submitBtn", function (e) {
     var id = $(this).data("id");
     console.log(id);
     $.ajax({
-        method: "POST", //made this route on server.js
-        url: "/api/articleNote/" + id
+        method: "POST", 
+        url: "/api/articleNote/" + id,
+        data: {
+            title: $("#noteTitle").val(),
+            body: $("#noteBody").val()
+        }
     }).then(data => {
-        location.reload();
+        // console.log(data);
+        //location.reload();
     });
 });
 

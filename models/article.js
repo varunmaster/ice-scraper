@@ -12,7 +12,7 @@ var articleSchema = new Schema({
     },
     note: {
         type: Schema.Types.ObjectId, //this is a foreign key to the note collection
-        ref: "note"
+        ref: "Note"
     }
 });
 

@@ -76,10 +76,10 @@ app.get("/api/article/:id", (req, res) => {
     });
 });
 
-app.get("/api/articleNote/:id", (req, res) => { //how does "populate" know the content of req? 
+app.get("/api/articleNote/:id", (req, res) => { 
     var id = req.params.id;
-    db.Article.findById({"_id": id})
-    .populate("note")
+    db.Article.findOne({"_id": id})
+    .populate("note") //populate is like a join and will send the collection of note as well
     .then(data => {
       return res.json(data);
     })
@@ -88,8 +88,22 @@ app.get("/api/articleNote/:id", (req, res) => { //how does "populate" know the c
     });
 });
 
+app.post("/api/articleNote/:id", (req, res) => { 
+    db.Note.create(req.body).then(dbNote => {
+        return db.Article.findOneAndUpdate({ _id: req.params.id }, { note: dbNote._id }, { new: true }); //adding the association (foreign key) to article collection
+    }).then(data => {
+        return res.json(data);
+    }).catch(err => {
+        return res.status(500).json(err);
+    })
+});
+
 app.delete("/api/all/articles", (req, res) => {
     db.Article.deleteMany({}).then(data => {
+        db.Note.deleteMany({}).then(data => {
+            console.log("deleted all notes");
+        }); //want to empty out notes collection as well
+    }).then(data => {
         return res.json(data);
     }).catch(err => {
         return res.status(500).json(err);
