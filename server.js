@@ -75,6 +75,7 @@ app.get("/api/article/:id", (req, res) => {
     });
 });
 
+//this is for retrieving an article AND the Note that is associated to it
 app.get("/api/articleNote/:id", (req, res) => { 
     var id = req.params.id;
     db.Article.findOne({"_id": id})
@@ -87,6 +88,7 @@ app.get("/api/articleNote/:id", (req, res) => {
     });
 });
 
+//this is for creating a note and associating it to a Note
 app.post("/api/articleNote/:id", (req, res) => { 
     db.Note.create(req.body).then(dbNote => {
         return db.Article.findOneAndUpdate({ _id: req.params.id }, { note: dbNote._id }, { new: true }); //adding the association (foreign key) to article collection
@@ -99,10 +101,13 @@ app.post("/api/articleNote/:id", (req, res) => {
 
 app.delete("/api/all/articles", (req, res) => {
     db.Article.deleteMany({}).then(data => {
-        db.Note.deleteMany({}).then(data => {
+        return db.Note.deleteMany({}) //want to empty out notes collection as well
+        .then(data => {
             console.log("deleted all notes");
-        }); //want to empty out notes collection as well
-    }).then(data => {
+            return data; //returning data here which will be passed to the next "then"
+        }); 
+    }).then(function(data) {
+        console.log(data);
         return res.json(data);
     }).catch(err => {
         return res.status(500).json(err);

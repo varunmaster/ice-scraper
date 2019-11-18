@@ -7,12 +7,13 @@ $.ajax({
     });
 });
 
-$(document).on("click", "#clear-button", () => {
+$(document).on("click", "#clear-button", function() {
+    console.log("you dleted everything");
     $.ajax({
         method: "DELETE",
         url: "/api/all/articles"
     }).then(data => {
-        location.reload(true);
+        location.reload();
     });
 });
 
