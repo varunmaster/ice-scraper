@@ -61,8 +61,31 @@ app.get("/api/all/articles/", (req, res) => {
         .then(data => {
             return res.json(data);
         }).catch(err => {
-            return res.json(err);
+            return res.status(500).json(err);
         });
+});
+
+app.get("/api/article/:id", (req, res) => {
+    var id = req.params.id;
+    db.Article.findOne({
+        "_id": id
+    }).then(data => {
+        return res.json(data);
+    }).catch(err => {
+        return res.status(500).json(err);
+    });
+});
+
+app.get("/api/articleNote/:id", (req, res) => { //how does "populate" know the content of req? 
+    var id = req.params.id;
+    db.Article.findById({"_id": id})
+    .populate("note")
+    .then(data => {
+      return res.json(data);
+    })
+    .catch(err => {
+      return res.status(500).json(err);
+    });
 });
 
 app.delete("/api/all/articles", (req, res) => {
