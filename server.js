@@ -12,14 +12,12 @@ app.engine("handlebars", expressHB({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
 app.use(logger("dev"));
-
 app.use(express.urlencoded({ extended: true })); //this and next line allow us to take api calls/requests from front and parse them 
 app.use(express.json());
-
 app.use(express.static("public")); //this allows us to serve up the index.html page and other front-end pages via express
 
+var PORT = process.env.PORT || 3000;
 var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/ice-scraper";
-
 mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 
 app.get("/", function (req, res) {
@@ -123,6 +121,6 @@ app.delete("/api/article/:id", (req, res) => {
     });
 });
 
-app.listen(3000, function () {
-    console.log("App running on port 3000" + "!");
+app.listen(PORT, function () {
+    console.log("App running on port " + PORT + "!");
 });
