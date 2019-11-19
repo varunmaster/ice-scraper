@@ -126,6 +126,33 @@ app.delete("/api/article/:id", (req, res) => {
     });
 });
 
+app.delete("/api/note/:id", (req, res) => {
+    var id = req.params.id;
+    console.log(id);
+    db.Article.findOne({
+        "_id": id
+    }).then(data => {
+        console.log(data)
+        return data;
+    }).then(data => {
+        db.Note.deleteOne({
+            "_id": data.note
+        }).then(data => {
+            return res.json(data)
+        });
+    }).catch(err => {
+        return res.status(500).json(err);
+    });
+
+    // db.Note.deleteOne({
+    //     "_id": id
+    // }).then(data => {
+    //     return res.json(data)
+    // }).catch(err => {
+    //     return res.status(500).json(err);
+    // });
+});
+
 app.listen(PORT, function () {
     console.log("App running on port " + PORT + "!");
 });

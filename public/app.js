@@ -39,7 +39,7 @@ $(document).on("click", ".article", function () {
         // put data.title in the card-body
         // console.log(data);
         $(".note").append("<p class='card-text'>" + data.title + "</p>");
-        $(".note").append("<form><div class='form-group'><label for='exampleInputText'>Title</label><input type='text' class='form-control' id='noteTitle' placeholder='Note Title'></div><div class='form-group'><label for='exampleFormControlTextarea1'>Body</label><textarea class='form-control' id='noteBody' rows='3' placeholder='Body'></textarea></div><button type='submit' class='btn btn-primary text-center' id='note-submitBtn' data-id='" + data._id + "'>Submit</button></form>");
+        $(".note").append("<form><div class='form-group'><label for='exampleInputText'>Title</label><input type='text' class='form-control' id='noteTitle' placeholder='Note Title'></div><div class='form-group'><label for='exampleFormControlTextarea1'>Body</label><textarea class='form-control' id='noteBody' rows='3' placeholder='Body'></textarea></div><button type='submit' class='btn btn-primary text-center' id='note-submitBtn' data-id='" + data._id + "'>Submit</button><button type='submit' class='btn btn-danger text-center' id='note-deleteBtn' data-id='" + data._id + "'>Delete</button></form>");
     }).then( () => {
         $.ajax({
             method: "GET",
@@ -66,6 +66,19 @@ $(document).on("click", "#note-submitBtn", function (e) {
     }).then(data => {
         // console.log(data);
         //location.reload();
+    });
+});
+
+$(document).on("click", "#note-deleteBtn", function (e) {
+    e.preventDefault();
+    var id = $(this).data("id");
+    // console.log(id);
+    $.ajax({
+        method: "DELETE", 
+        url: "/api/note/" + id
+    }).then(data => {
+        // console.log(data);
+        location.reload();
     });
 });
 
